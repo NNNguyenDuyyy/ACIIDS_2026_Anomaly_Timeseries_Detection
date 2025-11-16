@@ -114,7 +114,8 @@ C = 1
 num_epochs = 10
 
 Our model surpasses 12 state-of-the-art baselines on 5 out of 6 benchmark datasets, demonstrating strong robustness and generalization.
-🧪 Notes
+
+**Notes**
 
 Experiments conducted on Kaggle GPU (Tesla P100).
 
