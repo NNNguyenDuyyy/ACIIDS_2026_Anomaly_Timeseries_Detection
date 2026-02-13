@@ -12,7 +12,7 @@ A Mutual Attention mechanism enables both branches to exchange contextual inform
 Anomaly scores are derived from reconstruction errors.
 
 ## Reproduction Steps
-### Step 1. Download Dataset
+### Step 1. Download Dataset & Checkpoint
 
 All datasets used in this paper are available via Google Drive:
 - 2dgesture: https://drive.google.com/drive/folders/1XNTA2CVxOybKk2dD2akyeUanYnni-0ea?usp=sharing
@@ -29,6 +29,7 @@ All datasets used in this paper are available via Google Drive:
 - ucr-136: https://drive.google.com/drive/folders/13bL9EscTAlnmrs7w-SBXzTZJZnXU5kYs?usp=sharing
 - ucr-137: https://drive.google.com/drive/folders/1J8iSES6r-4llOMYtCw4aclY9bBquTtvO?usp=sharing
 - ucr-138: https://drive.google.com/drive/folders/14MIk2troiMnzT_JMWC7DQyrg3wQjvyIT?usp=sharing
+- Checkpoint: https://drive.google.com/drive/folders/16hfNGonOpRB1HtXUCawA1GRZQcLhPytj?usp=sharing
 
 After downloading, extract them into a folder named datasets in the same directory as the notebook on Kaggle.
 
@@ -37,6 +38,21 @@ After downloading, extract them into a folder named datasets in the same directo
       - 2DGesture_test.npy
       - 2DGesture_test_label.npy
       - 2DGesture_train.npy
+    ├── checkpoint/aciids-2026-tsad-checkpoint/
+      - best_model_2D_GESTURE.pth
+      - best_model_ECG_A.pth
+      - best_model_ECG_B.pth
+      - best_model_ECG_C.pth
+      - best_model_ECG_D.pth
+      - best_model_ECG_E.pth
+      - best_model_ECG_F.pth
+      - best_model_MSL_C1.pth
+      - best_model_PD.pth
+      - best_model_SMD_11.pth
+      - best_model_UCR_135.pth
+      - best_model_UCR_136.pth
+      - best_model_UCR_137.pth
+      - best_model_UCR_138.pth
     ├── ecg-a-data/
       - ECG_test.npy
       - ECG_test_label.npy
@@ -92,31 +108,31 @@ After downloading, extract them into a folder named datasets in the same directo
 
 ### Step 2. Upload Notebook on Kaggle
 
-Upload **aciids-2026-tsad.ipynb** on Kaggle
+Upload **aciids-2026-tsad-train-test.ipynb** on Kaggle
 
 
-### Step 3. Run Notebook
+### Step 3. Training & Testing
 
-Open and execute all cells in aciids-2026-tsad.ipynb:
-
-Modify hyperparameters:
-
-data_path = "/kaggle/input/ucr-135" # for example  
-
-batch_size = 32
-
-win_size = 100
-
-step = 1
-
-C = 1
-
-num_epochs = 10
-
-Our model surpasses 12 state-of-the-art baselines on 5 out of 6 benchmark datasets, demonstrating strong robustness and generalization.
+```python
+if __name__ == "__main__":
+    main(training = False, 
+         checkpoint = "/kaggle/input/datasets/nguyenhuuduy04/checkpoint/aciids-2026-tsad-checkpoint/best_model_2D_GESTURE.pth", 
+         dataset = "2DGesture", 
+         name_subset = None,
+         data_path = "/kaggle/input/datasets/nguyenhuuduy04/2dgesture",
+         C = 2,
+         batch_size = 64,
+         epochs = 70,
+         win_size = 100,
+         step = 1
+        )
+```
+In this cell, you can choose to retrain the model from scratch or run testing only by setting `training=True` or `training=False`. You can also switch the `dataset` and update `data_path` to match the data you want to train/test on. Hyperparameters such as `C`, `batch_size`, and `epochs` can be adjusted according to Table 2 in our paper. Alternatively, you can use a pretrained `checkpoint` to reproduce the reported results as in our paper.
 
 **Notes**
 
-Experiments conducted on Kaggle GPU (Tesla P100).
+Our model surpasses 12 state-of-the-art baselines on 5 out of 6 benchmark datasets, demonstrating strong robustness and generalization.
+
+Experiments conducted on Kaggle GPU (P100).
 
 Haar transform is fixed and applied per channel.
