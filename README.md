@@ -11,6 +11,10 @@ Our model decomposes input windows into trend (low-frequency) and transient (hig
 A Mutual Attention mechanism enables both branches to exchange contextual information, while TCN decoders reconstruct each component.
 Anomaly scores are derived from reconstruction errors.
 
+![Our Architecture](https://github.com/user-attachments/assets/0cdfa1db-2b04-4fdc-b78b-4ec89449b38a)
+
+
+
 ## Reproduction Steps
 ### Step 1. Download Dataset & Checkpoint
 
