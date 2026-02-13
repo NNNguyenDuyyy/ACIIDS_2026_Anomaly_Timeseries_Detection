@@ -13,12 +13,27 @@ Anomaly scores are derived from reconstruction errors.
 
 ![Our Architecture](https://github.com/user-attachments/assets/0cdfa1db-2b04-4fdc-b78b-4ec89449b38a)
 
+## Reproducibility
 
+All common hyperparameters are reported in **Table 1** of the paper (shared across datasets), and dataset-specific settings (e.g., `C`, `batch_size`, `epochs`) are reported in **Table 2**.  
+To further improve reproducibility, we provide **pretrained checkpoints** and **step-by-step instructions** below to reproduce the reported results.
+ 
+### Environment (Kaggle)
+- Python: 3.12.12 (GCC 11.4.0)
+- PyTorch: 2.8.0+cu126
+- CUDA runtime: 12.6 (`torch.version.cuda`)
+- GPU: Tesla P100-PCIE-16GB (compute capability 6.0)
+- CUDA available: True
+- We use a fixed random seed (**seed = 42**, as reported in Table 1). 
 
-## Reproduction Steps
-### Step 1. Download Dataset & Checkpoint
+---
 
-All datasets used in this paper are available via Google Drive:
+## Reproducibility Steps
+
+### Step 1. Download Datasets & Checkpoints
+
+We provide all datasets and pretrained checkpoints via Google Drive:
+
 - 2dgesture: https://drive.google.com/drive/folders/1XNTA2CVxOybKk2dD2akyeUanYnni-0ea?usp=sharing
 - ecg-a-data: https://drive.google.com/drive/folders/1rZHBSGlHOtZqSUcEb2nzk_sH-erNFs5W?usp=sharing
 - ecg-b-data: https://drive.google.com/drive/folders/1UPAbXMyPU1DPWTCiuylWz3MOjfC1mk-R?usp=sharing
@@ -37,6 +52,7 @@ All datasets used in this paper are available via Google Drive:
 
 After downloading, extract them into a folder named datasets in the same directory as the notebook on Kaggle.
 
+Expected structure:
 
     ├── 2dgesture/
       - 2DGesture_test.npy
@@ -112,31 +128,46 @@ After downloading, extract them into a folder named datasets in the same directo
 
 ### Step 2. Upload Notebook on Kaggle
 
-Upload **aciids-2026-tsad-train-test.ipynb** on Kaggle
+Upload **`aciids-2026-tsad-train-test.ipynb`** on Kaggle. This notebook contains the full training/testing pipeline.
 
 
-### Step 3. Training & Testing
+### Step 3. Training & Testing (Main Entry Cell)
 
 ```python
 if __name__ == "__main__":
-    main(training = False, 
-         checkpoint = "/kaggle/input/datasets/nguyenhuuduy04/checkpoint/aciids-2026-tsad-checkpoint/best_model_2D_GESTURE.pth", 
-         dataset = "2DGesture", 
-         name_subset = None,
-         data_path = "/kaggle/input/datasets/nguyenhuuduy04/2dgesture",
-         C = 2,
-         batch_size = 64,
-         epochs = 70,
-         win_size = 100,
-         step = 1
-        )
+    main(
+        training=False,
+        checkpoint="/kaggle/input/datasets/nguyenhuuduy04/checkpoint/aciids-2026-tsad-checkpoint/best_model_2D_GESTURE.pth",
+        dataset="2DGesture",
+        name_subset=None,
+        data_path="/kaggle/input/datasets/nguyenhuuduy04/2dgesture",
+        C=2,
+        batch_size=64,
+        epochs=10,     # use Table 2 for paper reproduction
+        win_size=100,  # Table 1 (fixed)
+        step=1         # stride for sliding windows
+    )
 ```
-In this cell, you can choose to retrain the model from scratch or run testing only by setting `training=True` or `training=False`. You can also switch the `dataset` and update `data_path` to match the data you want to train/test on. Hyperparameters such as `C`, `batch_size`, and `epochs` can be adjusted according to Table 2 in our paper. Alternatively, you can use a pretrained `checkpoint` to reproduce the reported results as in our paper.
+**How to use this cell**
+
+- Train from scratch: set training=True (checkpoint can be None).
+
+- Test only / reproduce paper results: set training=False and provide a pretrained checkpoint.
+
+- You can switch dataset and update data_path to match the dataset you want to run.
+
+- Dataset-specific hyperparameters (C, batch_size, epochs) should follow Table 2 in the paper for strict reproduction.
+
+- Common hyperparameters (e.g., win_size) follow Table 1.
+
+**Recommended parameter mapping (paper → code)**
+
+- Table 1 (common): win_size, model dimensions (d_model, heads, FFN), optimizer/lr, seed, etc.
+
+- Table 2 (per dataset): C, batch_size, epochs, plus name_subset when applicable.
 
 **Notes**
 
-Our model surpasses 12 state-of-the-art baselines on 5 out of 6 benchmark datasets, demonstrating strong robustness and generalization.
+- Our model surpasses 12 state-of-the-art baselines on 5/6 benchmark datasets.
 
-Experiments conducted on Kaggle GPU (P100).
-
-Haar transform is fixed and applied per channel.
+- Haar transform is fixed and applied per channel.
